@@ -1,0 +1,4 @@
+    <p>Hi,</p>
+    <p>Thank you for your email. I’ve attached the requested files. Please review them and let me know if everything is in order.</p>
+    <p>Best,</p>
+    <p><strong>Support Team</strong></p>
