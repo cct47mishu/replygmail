@@ -15,11 +15,11 @@ import email
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-import os
 import imaplib
 import smtplib
 import ssl
 import httplib2
+
 init(strip=not sys.stdout.isatty())
 init(autoreset=True)
 ssl_context = ssl.create_default_context()
@@ -33,10 +33,11 @@ Error = 0
 MAX_THREADS = 1  # Set max threads for concurrent email sending
 lock = Lock()
 
+# Define the path for wkhtmltopdf
 if sys.platform == "win32":
     path_to_wkhtmltopdf = r'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 else:
-    path_to_wkhtmltopdf = '/usr/local/bin/wkhtmltopdf'
+    path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'
 
 pdfkit_config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
 
@@ -220,8 +221,6 @@ elif auth_method == '2':
             if not reply_to:
                 reply_to = next((header['value'] for header in email_data if header['name'].lower() == 'from'), None)
 
-            print("Replying to:", reply_to)
-
             to_email = sanitize_header(reply_to if reply_to else email_from)
 
             with lock:
@@ -262,7 +261,7 @@ elif auth_method == '2':
             msg.add_alternative(emailMsg, subtype='html')
 
             pdf_data, pdf_filename = generate_pdf_from_html(emailMsgs, random.randint(999999999999, 9999999999999))
-            msg.add_attachment(pdf_data.getvalue(), maintype='application', subtype='pdf', filename=pdf_filename)
+            #msg.add_attachment(pdf_data.getvalue(), maintype='application', subtype='pdf', filename=pdf_filename)
 
             raw_message = {'raw': base64.urlsafe_b64encode(msg.as_bytes()).decode()}
             service.users().messages().send(userId='me', body=raw_message).execute()
